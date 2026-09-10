@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLASS OPTIMIZER PRO</title>
+<meta name="google-site-verification" content="Fy7e2a2BVPE60dIz4NKcngzoOoifz6qlQpu-dE_t4SA" />
+<!-- SheetJS for Excel Reading -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- html2pdf.js for multi-page export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Pure Offline QR Code Generator Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: linear-gradient(180deg, #0f172a 0%, #111827 35%, #e2e8f0 100%); color: #0f172a; user-select: none; }
+
+  .desktop-shell {
+    width: min(1800px, calc(100% - 20px));
+    margin: 14px auto 22px;
+    background: rgba(8, 15, 28, 0.9);
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    border-radius: 18px;
+    box-shadow: 0 28px 80px rgba(2, 6, 23, 0.52);
+    overflow: hidden;
+  }
+
+  /* Top Navbar */
+  .top-navbar {
+    background: linear-gradient(90deg, #020817 0%, #0f172a 45%, #111827 100%);
+    color: white;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #38bdf8;
+    box-shadow: inset 0 -1px 0 rgba(125,211,252,0.18);
+    min-height: 74px;
+  }
+  .brand-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 28%, #0f172a 100%);
+    border: 1px solid rgba(191,219,254,0.8);
+    box-shadow: 0 10px 20px rgba(59,130,246,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-mark::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+  }
+  .brand-mark svg {
+    position: relative;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 2px 8px rgba(255,255,255,0.35));
+  }
+  .brand-copy { display: flex; flex-direction: column; }
+  .top-navbar h1 {
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    color: #7dd3fc;
+    line-height: 1.1;
+  }
+  .top-navbar p {
+    font-size: 11px;
+    color: #cbd5e1;
+    margin-top: 2px;
+    letter-spacing: 0.6px;
+  }
+  .window-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .window-control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.45);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+  }
+  .window-control.red { background: #ef4444; }
+  .window-control.yellow { background: #fbbf24; }
+  .window-control.green { background: #22c55e; }
+  .status-badge {
+    margin-left: 10px;
+    background: rgba(56,189,248,0.1);
+    color: #bae6fd;
+    border: 1px solid rgba(125,211,252,0.35);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .app-toolstrip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(30,41,59,0.92));
+    border-bottom: 1px solid rgba(125,211,252,0.15);
+    padding: 8px 16px;
+    gap: 12px;
+  }
+  .tool-pill-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tool-pill {
+    border: 1px solid rgba(148,163,184,0.25);
+    background: rgba(15,118,110,0.14);
+    color: #dbeafe;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .tool-pill.active {
+    background: linear-gradient(180deg, rgba(14,165,233,0.18), rgba(59,130,246,0.14));
+    border-color: rgba(125,211,252,0.55);
+    color: #e0f2fe;
+  }
+  .tool-status {
+    color: #a7f3d0;
+    font-weight: 800;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .window-taskbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: linear-gradient(180deg, rgba(30,41,59,0.98), rgba(15,23,42,0.96));
+    border-top: 1px solid rgba(125,211,252,0.18);
+    padding: 8px 16px;
+    color: #e2e8f0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .taskbar-left, .taskbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .taskbar-pill {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(125,211,252,0.3);
+    border-radius: 6px;
+    padding: 4px 8px;
+    color: #dbeafe;
+  }
+  .taskbar-pill.success {
+    background: rgba(34,197,94,0.12);
+    border-color: rgba(134,239,172,0.35);
+    color: #bbf7d0;
+  }
+
+  .app-layout { display: flex; max-width: 1800px; margin: 18px auto; gap: 16px; padding: 0 12px; }
+
+  .launch-splash {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(56,189,248,0.18), rgba(2,6,23,0.92) 42%, rgba(2,6,23,0.96));
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    backdrop-filter: blur(8px);
+  }
+  .launch-splash.visible { display: flex; }
+  .launch-card {
+    background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(15,23,42,0.86));
+    border: 1px solid rgba(125,211,252,0.35);
+    border-radius: 18px;
+    width: min(520px, calc(100vw - 40px));
+    padding: 26px 22px 18px;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(3,7,18,0.75);
+  }
+  .launch-logo {
+    width: 86px;
+    height: 86px;
+    margin: 0 auto 16px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #38bdf8 0%, #2563eb 30%, #0f172a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(191,219,254,0.8);
+  }
+  .launch-logo svg { width: 44px; height: 44px; }
+  .launch-card h3 { color: #e0f2fe; font-size: 26px; letter-spacing: 0.9px; font-weight: 900; }
+  .launch-card p { color: #cbd5e1; font-size: 12px; margin-top: 8px; letter-spacing: 0.6px; }
+  .launch-progress {
+    margin-top: 18px;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(148,163,184,0.18);
+    border: 1px solid rgba(148,163,184,0.28);
+    overflow: hidden;
+  }
+  .launch-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #38bdf8 0%, #22c55e 100%);
+    border-radius: inherit;
+    transition: width 0.35s ease;
+  }
+  .launch-meta {
+    margin-top: 12px;
+    color: #7dd3fc;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Left Controls Sidebar */
+  .sidebar { width: 460px; flex-shrink: 0; background: rgba(255,255,255,0.97); padding: 14px; border-radius: 12px; box-shadow: 0 18px 40px rgba(15,23,42,0.18); height: calc(100vh - 98px); overflow-y: auto; border: 1px solid rgba(148,163,184,0.25); }
+  .card-sec { margin-bottom: 12px; border: 1px solid #e2e8f0; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-radius: 10px; padding: 10px; }
+  .card-sec:last-child { border-bottom: none; }
+  .sec-title { font-size: 11px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.5px; }
+  
+  .f-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .f-col { flex: 1; }
+  label { font-size: 10px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px; }
+  input, select, textarea { width: 100%; padding: 5px 7px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 11px; font-weight: 600; background: #fff; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid rgba(14,165,233,0.15); border-color: #38bdf8; }
+  
+  table.in-tbl { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; }
+  table.in-tbl th, table.in-tbl td { border: 1px solid #cbd5e1; padding: 4px 2px; text-align: center; }
+  table.in-tbl th { background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); font-weight: 700; color: #334155; }
+  table.in-tbl input { text-align: center; padding: 2px; }
+
+  .btn { display: inline-flex; justify-content: center; align-items: center; background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.15s; box-shadow: 0 8px 18px rgba(2,132,199,0.18); }
+  .btn:hover { background: #0369a1; transform: translateY(-1px); }
+  .btn-sm { padding: 2px 6px; font-size: 10px; }
+  .btn-green { background: linear-gradient(180deg, #16a34a 0%, #15803d 100%); }
+  .btn-green:hover { background: #15803d; }
+  .btn-red { background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); }
+  .btn-red:hover { background: #b91c1c; }
+  .btn-excel { background: linear-gradient(180deg, #10b981 0%, #059669 100%); }
+  .btn-excel:hover { background: #0b5a2f; }
+  .btn-pdf { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); font-size: 12px; padding: 8px 16px; }
+  .btn-pdf:hover { background: #991b1b; }
+
+  .upload-box {
+    border: 2px dashed #16a34a;
+    background: #f0fdf4;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .upload-box input[type="file"] { display: none; }
+  .upload-label { font-size: 11px; font-weight: 800; color: #15803d; cursor: pointer; display: block; }
+
+  /* Live Search Box */
+  .search-result-box {
+    background: #fdf2f8;
+    border: 1px solid #f472b6;
+    padding: 6px;
+    border-radius: 4px;
+    margin-top: 6px;
+    font-size: 10pt;
+    color: #be185d;
+    font-weight: 700;
+  }
+  .search-item-link {
+    display: block;
+    padding: 4px 6px;
+    margin-top: 3px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #0369a1;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 9.5pt;
+  }
+  .search-item-link:hover { background: #e0f2fe; border-color: #0284c7; }
+
+  @keyframes flashHighlight {
+    0% { background-color: #fef08a; transform: scale(1.01); }
+    100% { background-color: transparent; transform: scale(1); }
+  }
+  .highlight-pattern {
+    animation: flashHighlight 1.5s ease;
+    border: 2px solid #eab308 !important;
+    padding: 4px;
+    border-radius: 4px;
+  }
+
+  /* Right Report Viewport */
+  .report-viewport { flex-grow: 1; height: calc(100vh - 98px); overflow: auto; padding: 10px; scroll-behavior: auto; background: linear-gradient(180deg, #eef2f7 0%, #e2e8f0 100%); border-radius: 12px; border: 1px solid rgba(148,163,184,0.3); box-shadow: inset 0 1px 0 rgba(255,255,255,0.5); }
+
+  .summary-shell {
+    background: linear-gradient(135deg, #0f4cbd 0%, #0b3fa1 18%, #0d5ed7 52%, #e0f2fe 100%);
+    border: 1px solid rgba(191, 219, 254, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 24px 55px rgba(13, 94, 215, 0.35), inset 0 1px 0 rgba(255,255,255,0.35);
+    padding: 18px;
+    margin: 0 auto 18px;
+    width: min(100%, 1280px);
+  }
+  .summary-shell-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(191, 219, 254, 0.45);
+  }
+  .summary-shell-title { font-size: 15px; font-weight: 900; letter-spacing: 1px; color: #eff6ff; text-transform: uppercase; }
+  .summary-kpis { display: grid; grid-template-columns: repeat(4, minmax(200px, 1fr)); gap: 12px; }
+  .summary-kpi {
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(191,219,254,0.18));
+    border: 1px solid rgba(191,219,254,0.8);
+    border-radius: 16px;
+    padding: 14px 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+    min-height: 110px;
+  }
+  .summary-kpi .label { font-size: 10px; font-weight: 800; color: #dbeafe; text-transform: uppercase; letter-spacing: 0.8px; }
+  .summary-kpi .value { margin-top: 6px; font-weight: 900; font-size: 22px; color: #ffffff; }
+  .summary-kpi .sub { margin-top: 4px; font-size: 10px; color: #dbeafe; }
+  .summary-group-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; margin-top: 14px; }
+  .summary-box { background: rgba(219,234,254,0.18); border: 1px solid rgba(191,219,254,0.55); border-radius: 16px; padding: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+  .summary-box-title { font-size: 10px; font-weight: 900; color: #eff6ff; letter-spacing: 0.9px; text-transform: uppercase; margin-bottom: 10px; }
+  .summary-pack-list { display: grid; gap: 6px; }
+  .summary-pack-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(255,255,255,0.9); border: 1px solid rgba(196, 181, 253, 0.5); border-radius: 12px; padding: 9px 10px; }
+  .summary-pack-item strong { font-size: 11px; color: #0f172a; }
+  .summary-pack-item small { display: block; color: #475569; font-size: 9px; }
+
+  .pending-red-box {
+    background: linear-gradient(180deg, rgba(254,242,242,0.95) 0%, rgba(255,247,247,0.92) 100%);
+    border: 1px solid rgba(252,165,165,0.9);
+    border-left: 5px solid #dc2626;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    color: #991b1b;
+    box-shadow: 0 10px 22px rgba(220,38,38,0.08);
+  }
+  .pending-red-box-title {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pending-red-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 7px 9px;
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .optimization-progress-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: linear-gradient(135deg, #ecfeff 0%, #e0f2fe 45%, #dbeafe 100%);
+    border: 1px solid #7dd3fc;
+    border-radius: 14px;
+    margin-top: 8px;
+    padding: 12px 14px;
+    min-height: 94px;
+    box-shadow: 0 10px 24px rgba(14, 165, 233, 0.12);
+  }
+  .optimization-progress-ring {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: conic-gradient(#0ea5e9 0deg, #0ea5e9 300deg, rgba(148,163,184,0.18) 300deg 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .optimization-progress-ring::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    border: 1px solid rgba(14,165,233,0.3);
+  }
+  .optimization-progress-value {
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+    font-weight: 900;
+    color: #0f172a;
+  }
+  .optimization-progress-copy {
+    flex: 1;
+    min-width: 0;
+  }
+  .optimization-progress-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .optimization-progress-subtext {
+    margin-top: 4px;
+    font-size: 10px;
+    color: #475569;
+    line-height: 1.4;
+  }
+
+  .payment-box {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  .payment-box-title {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: #0f172a;
+    margin-bottom: 8px;
+  }
+  .payment-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .payment-note {
+    border: 1px solid #dbeafe;
+    background: #eff6ff;
+    color: #1e3a8a;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 8px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  /* EXACT OPTY-WAY / EDIT-WAY REPORT STYLES */
+  .opty-page {
+    background: white;
+    width: min(100%, 900px);
+    min-height: 220mm;
+    margin: 0 auto 25px auto;
+    padding: 10px 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    color: #000;
+    font-size: 8.5pt;
+    line-height: 1.25;
+    position: relative;
+    box-sizing: border-box;
+    contain: layout paint;
+  }
+
+  .rep-top-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .rep-top-header .left-title { font-weight: 800; font-size: 9.5pt; }
+
+  .gray-title-bar {
+    background: #a8a8a8;
+    color: #000;
+    font-weight: 800;
+    font-size: 8.5pt;
+    padding: 2px 6px;
+    margin-top: 5px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 8pt; margin-bottom: 6px; }
+  .info-row { display: flex; margin-bottom: 2px; }
+  .info-lbl { width: 130px; font-weight: normal; color: #222; }
+  .info-val { font-weight: 600; }
+
+  .res-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin-bottom: 6px; }
+  .res-table td { padding: 2px 3px; }
+  .res-lbl { width: 135px; }
+  .res-qty { width: 45px; text-align: right; font-weight: 600; }
+  .res-pct { width: 65px; text-align: right; font-weight: 600; }
+  .res-val1 { width: 85px; text-align: right; font-weight: 600; }
+  .res-val2 { width: 85px; text-align: right; font-weight: 600; }
+
+  .tbl-sheets { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-top: 4px; margin-bottom: 6px; }
+  .tbl-sheets th, .tbl-sheets td { border: 0.5px solid #666; padding: 2.5px 3px; text-align: center; }
+  .tbl-sheets th { background: #e5e5e5; font-weight: 800; }
+
+  /* CAD DRAWING SECTION WITH EXACT SIDEBAR TABLES */
+  .draw-plan-block { margin-top: 6px; margin-bottom: 14px; page-break-inside: avoid; }
+  .draw-plan-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5pt;
+    font-weight: 800;
+    margin-bottom: 3px;
+    border-bottom: 1px solid #111;
+    padding-bottom: 2px;
+  }
+
+  .plan-flex-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .draw-outer-box {
+    border: 1.5px solid #000;
+    position: relative;
+    background: #fff;
+    flex-shrink: 0;
+    max-width: 100%;
+    min-width: 220px;
+  }
+
+  .plan-sidebar-info {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 220px;
+  }
+
+  .data-box {
+    border: 1px solid #64748b;
+    border-radius: 3px;
+    background: #ffffff;
+    padding: 4px 6px;
+    font-size: 7.5pt;
+  }
+  .data-box-title {
+    font-weight: 800;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    padding-bottom: 2px;
+    margin-bottom: 3px;
+    border-bottom: 1px solid #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+  }
+  .data-box-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7pt;
+  }
+  .data-box-table th, .data-box-table td {
+    border: 0.5px solid #cbd5e1;
+    padding: 2px 3px;
+    text-align: center;
+  }
+  .data-box-table th { background: #f8fafc; font-weight: 700; }
+
+  .offcut-highlight-row { background: #fee2e2; color: #991b1b; font-weight: 700; }
+  .piece-highlight-row { background: #f0fdf4; color: #166534; }
+
+  .cad-cut-piece {
+    position: absolute;
+    border: 1px solid #000;
+    background: #ffffff;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .cad-offcut-box {
+    position: absolute;
+    border: 1.5px dashed #dc2626;
+    background: #fee2e2;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .piece-center-label {
+    text-align: center;
+    font-size: 8.5pt;
+    font-weight: 800;
+    color: #000;
+    line-height: 1.1;
+  }
+
+  .offcut-center-label {
+    text-align: center;
+    color: #991b1b;
+    line-height: 1.1;
+    font-weight: 900;
+  }
+
+  .opty-foot-bar {
+    position: absolute;
+    bottom: 6mm;
+    left: 12mm;
+    right: 12mm;
+    border-top: 1px solid #000;
+    padding-top: 3px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.5pt;
+  }
+
+  /* MODAL POPUPS */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+  }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 480px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+  .modal-card h2 { color: #0284c7; font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .modal-card p { font-size: 12px; color: #475569; margin-bottom: 16px; line-height: 1.4; }
+  .dev-badge {
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #0f172a;
+    margin-bottom: 16px;
+    text-align: left;
+    border-left: 3px solid #0284c7;
+  }
+
+  @media print {
+    body { background: white; }
+    .top-navbar, .sidebar, .modal-overlay { display: none !important; }
+    .app-layout { display: block; margin: 0; padding: 0; max-width: none; }
+    .report-viewport { height: auto; overflow: visible; padding: 0; }
+    .opty-page { box-shadow: none; margin: 0; padding: 8mm 10mm; page-break-after: always; width: 100%; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="launchSplash" class="launch-splash visible">
+  <div class="launch-card">
+    <div class="launch-logo">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M18 14h28v36H18z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M18 24h28M26 14v36M38 14v36" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        <path d="M22 22h20v20H22z" fill="none" stroke="#dbeafe" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M22 42l20-20M42 42L22 22" stroke="#dbeafe" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h3>GLASS OPTIMIZER PRO</h3>
+    <p>Loading industrial cutting engine and optimization workspace...</p>
+    <div class="launch-progress"><div id="launchProgressBar" class="launch-progress-bar"></div></div>
+    <div id="launchMeta" class="launch-meta">Initializing</div>
+  </div>
+</div>
+
+<!-- 1. WELCOME POPUP WINDOW -->
+<div id="welcomeModal" class="modal-overlay">
+  <div class="modal-card">
+    <h2>WELCOME TO GLASS OPTIMIZER PRO</h2>
+    <p>Professional Industrial CNC Glass Cutting & Optimization System</p>
+    <div class="dev-badge">
+      <div><strong>Developed by:</strong> Naba Jyoti Duwarah</div>
+      <div><strong>Email:</strong> nobaduwarah@gmail.com</div>
+      <div><strong>Mobile / WhatsApp:</strong> +91 9113891448</div>
+    </div>
+    <p style="font-size:11px; color:#16a34a; font-weight:700;">✓ Daily 3 Free Optimizations Available</p>
+    <button class="btn btn-green" style="width:100%; padding:10px; font-size:13px;" onclick="closeWelcomeModal()">START OPTIMIZATION</button>
+  </div>
+</div>
+
+<!-- 2. SUBSCRIPTION / PAYMENT POPUP WINDOW -->
+<div id="payModal" class="modal-overlay">
+  <div class="modal-card">
+    <h2 style="color:#dc2626;">DAILY FREE LIMIT EXHAUSTED</h2>
+    <p>Aapka daily 3 Free Optimization pura ho gaya hai. Unlimited access ke liye Yearly Plan activate karein.</p>
+    
+    <div style="background:#fef2f2; border:1px solid #f87171; border-radius:6px; padding:12px; margin-bottom:14px;">
+      <div style="font-size:16px; font-weight:800; color:#991b1b;">YEARLY PLAN: ₹499 / Year</div>
+      <div style="font-size:11px; color:#475569; margin-top:4px;">UPI ID: <strong>9113891448@ybl</strong> / <strong>nobaduwarah@gmail.com</strong></div>
+    </div>
+
+    <!-- Scanner Section (Pure Client-Side Offline QR) -->
+    <div style="margin-bottom:14px;">
+      <div id="qrCanvasContainer" style="display:flex; justify-content:center; padding:8px; background:#fff; border:1px solid #cbd5e1; border-radius:6px; width:176px; min-height:176px; margin:0 auto;"></div>
+      <div style="font-size:10.5px; color:#1e293b; font-weight:bold; margin-top:6px;">Scan with GPay / PhonePe / Paytm</div>
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:10px;">
+      <button class="btn btn-green" style="flex:1;" onclick="sendWhatsAppPayment()">📲 Send Message to +91 9113891448</button>
+    </div>
+
+    <!-- Activation Code Input -->
+    <div style="text-align:left; margin-top:10px;">
+      <label>Device Code: <strong id="dispDevCode" style="color:#0284c7;"></strong></label>
+      <div style="display:flex; gap:6px; margin-top:4px;">
+        <input type="text" id="actKeyInput" placeholder="Enter Activation Code">
+        <button class="btn btn-sm" onclick="verifyActivation()">Activate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="desktop-shell">
+  <div class="top-navbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-label="Glass Optimizer Pro logo">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 14h28v36H18z" fill="none" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M18 24h28M26 14v36M38 14v36" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 22h20v20H22z" fill="none" stroke="#dbeafe" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M22 42l20-20M42 42L22 22" stroke="#dbeafe" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-copy">
+        <h1>GLASS OPTIMIZER PRO</h1>
+        <p>DEVELOPER: <strong>NABA JYOTI DUWARAH</strong> &nbsp;|&nbsp; PH: <strong>+91 9113891448</strong> &nbsp;|&nbsp; EMAIL: <strong>nobaduwarah@gmail.com</strong></p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="status-badge">Secure Edition</div>
+      <div class="window-actions">
+        <div class="window-control red"></div>
+        <div class="window-control yellow"></div>
+        <div class="window-control green"></div>
+      </div>
+      <button class="btn btn-pdf" onclick="downloadDirectPDF()">📥 DOWNLOAD FULL PDF</button>
+      <button class="btn" style="background:#475569;" onclick="window.print()">🖨️ Print Report</button>
+    </div>
+  </div>
+
+  <div class="app-toolstrip">
+    <div class="tool-pill-group">
+      <div class="tool-pill active">Dashboard</div>
+      <div class="tool-pill">Optimization</div>
+      <div class="tool-pill">Reports</div>
+      <div class="tool-pill">Export</div>
+    </div>
+    <div class="tool-status">System Ready • Live Engine</div>
+  </div>
+
+  <div class="window-taskbar">
+    <div class="taskbar-left">
+      <div class="taskbar-pill">Glass Engine</div>
+      <div class="taskbar-pill success">Live Stock Match</div>
+      <div class="taskbar-pill">Secure Build</div>
+    </div>
+    <div class="taskbar-right">
+      <div class="taskbar-pill">Windows Pro UI</div>
+      <div class="taskbar-pill success">Ready</div>
+    </div>
+  </div>
+
+  <div class="app-layout">
+  
+  <div class="sidebar">
+    
+    <div class="card-sec">
+      <div class="sec-title">Workorder Info</div>
+      <div class="f-row">
+        <div class="f-col">
+          <label>Work Order</label>
+          <input type="text" id="woName" value="STOCK & DEMAND OPTIMIZATION ORDER">
+        </div>
+      </div>
+      <div class="f-row">
+        <div class="f-col">
+          <label>Material Code</label>
+          <input type="text" id="matCode" value="6">
+        </div>
+        <div class="f-col">
+          <label>Thickness (mm)</label>
+          <input type="number" id="thickness" value="6.0" step="0.5">
+        </div>
+        <div class="f-col">
+          <label>Kerf Cut (mm)</label>
+          <input type="number" id="kerf" value="0.0" step="0.5">
+        </div>
+      </div>
+
+      <div class="f-row" style="margin-top:6px;">
+        <div class="f-col">
+          <label>Trim Margin X (mm)</label>
+          <input type="number" id="trimX" value="0.0" step="1.0" min="0">
+        </div>
+        <div class="f-col">
+          <label>Trim Margin Y (mm)</label>
+          <input type="number" id="trimY" value="0.0" step="1.0" min="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Search & Jump to Sheet Feature -->
+    <div class="card-sec">
+      <div class="sec-title">🔍 Search Size & Jump to Sheet</div>
+      <input type="text" id="searchSizeInput" placeholder="Type size (e.g. 1830 or 1220)..." oninput="handleSearchCutSize()">
+      <div id="searchResultDisplay" class="search-result-box" style="display:none;"></div>
+    </div>
+
+    <!-- Excel Upload Section -->
+    <div class="card-sec">
+      <div class="sec-title">
+        <span>1. Excel File Import</span>
+        <button class="btn btn-sm btn-excel" onclick="downloadSampleExcel()">📥 Sample Excel</button>
+      </div>
+      
+      <div class="upload-box" onclick="document.getElementById('excelFileInput').click();">
+        <label for="excelFileInput" class="upload-label">
+          📁 <strong>CLICK HERE TO UPLOAD EXCEL (.XLSX / .XLS)</strong>
+        </label>
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" onchange="handleExcelFileUpload(event)">
+        <div id="fileUploadStatus" style="font-size:10px; color:#15803d; margin-top:4px; font-weight:700;"></div>
+      </div>
+    </div>
+
+    <!-- Stock Sheets Section -->
+    <div class="card-sec">
+      <div class="sec-title">
+        <span>2. Available Stock Sheets</span>
+        <button class="btn btn-sm btn-green" onclick="addSheetRow()">+ Add</button>
+      </div>
+      <table class="in-tbl" id="stockTable">
+        <thead>
+          <tr>
+            <th style="width:25px;">#</th>
+            <th>X Dim (mm)</th>
+            <th>Y Dim (mm)</th>
+            <th>Qty</th>
+            <th style="width:25px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic stock rows -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pieces Input Table -->
+    <div class="card-sec">
+      <div class="sec-title">
+        <span>3. Required Cut Sizes</span>
+        <button class="btn btn-sm btn-green" onclick="addPieceRow()">+ Add Row</button>
+      </div>
+
+      <div style="max-height:220px; overflow-y:auto;">
+        <table class="in-tbl" id="pieceTable">
+          <thead>
+            <tr>
+              <th style="width:30px;">Pos</th>
+              <th>Width</th>
+              <th>Height</th>
+              <th>Qty</th>
+              <th title="Grinding mm">Grind</th>
+              <th title="Rotate 90 deg">Rot</th>
+              <th style="width:25px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic piece rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <button class="btn btn-green" style="width:100%; margin-top:10px; padding:9px; font-size:12px;" onclick="triggerOptimizationCheck()">▶ CALCULATE EXACT OPTIMIZATION</button>
+      <div id="optimizationProgressBox" class="optimization-progress-panel" style="display:none;">
+        <div class="optimization-progress-ring"><div class="optimization-progress-value">0%</div></div>
+        <div class="optimization-progress-copy">
+          <div class="optimization-progress-title">OPTIMIZING...</div>
+          <div class="optimization-progress-subtext">Calculating best sheet fit and pending cut sizes...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-sec">
+      <div class="sec-title">
+        <span>4. Job Payment / Quotation</span>
+      </div>
+
+      <div class="payment-grid">
+        <div class="f-col">
+          <label>Customer Name / Naam</label>
+          <input type="text" id="custName" value="Customer Name">
+        </div>
+        <div class="f-col">
+          <label>Job Type / Kaam</label>
+          <input type="text" id="jobType" value="Glass Cutting Job">
+        </div>
+        <div class="f-col">
+          <label>Rate / Rate (₹/sq.m)</label>
+          <input type="number" id="ratePerSqm" value="1200" step="10">
+        </div>
+        <div class="f-col">
+          <label>Payment Status / Status</label>
+          <select id="paymentStatus">
+            <option value="Pending">Pending / PENDING</option>
+            <option value="Advance">Advance / ADVAANCE</option>
+            <option value="Paid">Paid / PAID</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="payment-box">
+        <div class="payment-box-title">Quotation Summary / Qote Summary</div>
+        <div id="paymentSummaryText" class="payment-note">No job computed yet. / Abhi koi job calculate nahi hua.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT REPORT VIEWPORT -->
+  <div class="report-viewport" id="reportViewport">
+    <div id="fullReportContainer"></div>
+  </div>
+
+</div>
+
+<script>
+// --- ANTI-TAMPER / SOURCE PROTECTION ---
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) {
+    e.preventDefault();
+  }
+});
+
+var globalLastOptimizationData = null;
+
+function updatePaymentSummary() {
+  var totalArea = 0;
+  var totalPieces = 0;
+  if (globalLastOptimizationData && globalLastOptimizationData.groupedPlans) {
+    totalPieces = globalLastOptimizationData.groupedPlans.reduce(function(sum, plan) { return sum + plan.pieces.length; }, 0);
+    totalArea = globalLastOptimizationData.groupedPlans.reduce(function(sum, plan) { return sum + plan.usedArea; }, 0);
+  }
+
+  var customerName = document.getElementById('custName').value || 'Customer Name';
+  var jobType = document.getElementById('jobType').value || 'Glass Cutting Job';
+  var rate = parseFloat(document.getElementById('ratePerSqm').value) || 0;
+  var status = document.getElementById('paymentStatus').value || 'Pending';
+  var estimate = (totalArea * rate).toFixed(2);
+
+  var summaryText =
+    'Customer: ' + customerName + ' | Job: ' + jobType + '\n' +
+    'Pieces: ' + totalPieces + ' | Area: ' + totalArea.toFixed(2) + ' sq.m\n' +
+    'Rate: ₹' + rate.toFixed(2) + ' / sq.m\n' +
+    'Estimated Amount: ₹' + estimate + '\n' +
+    'Payment Status: ' + status + '\n\n' +
+    'Customer: ' + customerName + ' | Kaam: ' + jobType + '\n' +
+    'Pieces: ' + totalPieces + ' | Area: ' + totalArea.toFixed(2) + ' sq.m\n' +
+    'Rate: ₹' + rate.toFixed(2) + ' / sq.m\n' +
+    'Approx Amount: ₹' + estimate + '\n' +
+    'Status: ' + status + ' / STAUTS';
+
+  var node = document.getElementById('paymentSummaryText');
+  if (node) node.innerText = summaryText;
+}
+
+// --- SUBSCRIPTION & DEVICE ACTIVATION (KEY = DEVICE * 69) ---
+function getDeviceId() {
+  var dev = localStorage.getItem('gopt_dev_id');
+  if (!dev) {
+    dev = Math.floor(100000 + Math.random() * 900000).toString();
+    localStorage.setItem('gopt_dev_id', dev);
+  }
+  return dev;
+}
+
+function isLicenseActive() {
+  var devId = getDeviceId();
+  var savedKey = localStorage.getItem('gopt_act_key');
+  var expectedKey = (parseInt(devId, 10) * 69).toString();
+  return savedKey === expectedKey;
+}
+
+function getDailyCount() {
+  var today = new Date().toISOString().split('T')[0];
+  var storedDate = localStorage.getItem('gopt_usage_date');
+  if (storedDate !== today) {
+    localStorage.setItem('gopt_usage_date', today);
+    localStorage.setItem('gopt_usage_count', '0');
+    return 0;
+  }
+  return parseInt(localStorage.getItem('gopt_usage_count') || '0', 10);
+}
+
+function incrementDailyCount() {
+  var c = getDailyCount() + 1;
+  localStorage.setItem('gopt_usage_count', c.toString());
+}
+
+function closeWelcomeModal() {
+  document.getElementById('welcomeModal').style.display = 'none';
+}
+
+function triggerOptimizationCheck() {
+  if (!isLicenseActive()) {
+    var count = getDailyCount();
+    if (count >= 3) {
+      showPaymentModal();
+      return;
+    }
+    incrementDailyCount();
+  }
+
+  var progressBox = document.getElementById('optimizationProgressBox');
+  if (!progressBox) return;
+
+  var progressValueEl = progressBox.querySelector('.optimization-progress-value');
+  var progressTextEl = progressBox.querySelector('.optimization-progress-subtext');
+  var ringEl = progressBox.querySelector('.optimization-progress-ring');
+
+  document.body.style.cursor = 'progress';
+  document.body.style.pointerEvents = 'auto';
+  document.documentElement.style.pointerEvents = 'auto';
+  progressBox.style.display = 'flex';
+  progressBox.style.pointerEvents = 'auto';
+  if (progressValueEl) progressValueEl.textContent = '1%';
+  if (progressTextEl) progressTextEl.textContent = 'Analyzing stock sheets and required cut sizes...';
+
+  var stockRows = document.querySelectorAll('#stockTable tbody tr').length;
+  var pieceRows = document.querySelectorAll('#pieceTable tbody tr').length;
+  var duration = Math.max(1500, Math.min(4200, 1200 + (stockRows + pieceRows) * 180));
+  var startedAt = performance.now();
+  var timer = setInterval(function() {
+    var elapsed = performance.now() - startedAt;
+    var percent = Math.min(100, Math.max(1, Math.round((elapsed / duration) * 100)));
+
+    if (progressValueEl) progressValueEl.textContent = percent + '%';
+    if (ringEl) {
+      var degrees = 3.6 * percent;
+      ringEl.style.background = 'conic-gradient(#0ea5e9 0deg, #0ea5e9 ' + degrees + 'deg, rgba(148,163,184,0.18) ' + degrees + 'deg 360deg)';
+    }
+
+    if (progressTextEl) {
+      if (percent < 35) {
+        progressTextEl.textContent = 'Checking stock fit and cutting sequence...';
+      } else if (percent < 75) {
+        progressTextEl.textContent = 'Packing sheets for minimum waste...';
+      } else if (percent < 100) {
+        progressTextEl.textContent = 'Finalizing best cut layout...';
+      } else {
+        progressTextEl.textContent = 'Optimization completed successfully.';
+      }
+    }
+
+    if (percent >= 100) {
+      clearInterval(timer);
+      progressBox.style.pointerEvents = 'auto';
+      if (progressValueEl) progressValueEl.textContent = '100%';
+      if (progressTextEl) progressTextEl.textContent = 'Optimization completed successfully. System ready.';
+      if (ringEl) ringEl.style.background = 'conic-gradient(#22c55e 0deg, #22c55e 360deg, rgba(148,163,184,0.18) 360deg 360deg)';
+      document.body.style.cursor = 'default';
+      document.body.style.pointerEvents = 'auto';
+      document.documentElement.style.pointerEvents = 'auto';
+      setTimeout(function() {
+        runOptimization();
+        if (progressBox) {
+          setTimeout(function() {
+            progressBox.style.display = 'none';
+            document.body.style.cursor = 'default';
+            document.body.style.pointerEvents = 'auto';
+            document.documentElement.style.pointerEvents = 'auto';
+          }, 550);
+        }
+      }, 250);
+    }
+  }, 36);
+}
+
+function showPaymentModal() {
+  var devId = getDeviceId();
+  document.getElementById('dispDevCode').innerText = devId;
+  
+  // Standard NPCI-compliant UPI payment intent string
+  var upiString = "upi://pay?pa=9113891448@ybl&pn=NABA%20JYOTI%20DUWARAH&am=499&cu=INR&tn=GlassOptimizerPro_" + devId;
+  
+  var qrContainer = document.getElementById('qrCanvasContainer');
+  qrContainer.innerHTML = "";
+  
+  if (typeof QRCode !== "undefined") {
+    new QRCode(qrContainer, {
+      text: upiString,
+      width: 160,
+      height: 160,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.M
+    });
+  } else {
+    qrContainer.innerHTML = '<img src="https://quickchart.io/qr?text=' + encodeURIComponent(upiString) + '&size=160" style="width:160px;height:160px;">';
+  }
+  
+  document.getElementById('payModal').style.display = 'flex';
+}
+
+function verifyActivation() {
+  var input = document.getElementById('actKeyInput').value.trim();
+  var devId = getDeviceId();
+  var expectedKey = (parseInt(devId, 10) * 69).toString();
+
+  if (input === expectedKey) {
+    localStorage.setItem('gopt_act_key', input);
+    alert('✓ Software Successfully Activated for 1 Year!');
+    document.getElementById('payModal').style.display = 'none';
+    runOptimization();
+  } else {
+    alert('❌ Invalid Activation Code! Please contact +91 9113891448');
+  }
+}
+
+function sendWhatsAppPayment() {
+  var devId = getDeviceId();
+  var text = encodeURIComponent('Hello Naba Jyoti Duwarah Sir,\nI want to buy Glass Optimizer Pro (Yearly Plan Rs.499).\nMy Device Code is: ' + devId + '\nPlease send me the Activation Code.');
+  window.open('https://wa.me/919113891448?text=' + text, '_blank');
+}
+
+// --- UI TABLE ROW MANAGEMENT ---
+function delRow(btn) {
+  var row = btn.closest('tr');
+  if (row.parentNode.children.length > 1) row.remove();
+}
+
+function addSheetRow(w, h, qty) {
+  w = w || 3660; h = h || 2440; qty = qty || 10;
+  var tbody = document.querySelector('#stockTable tbody');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td>' + (tbody.children.length + 1) + '</td>' +
+    '<td><input type="number" value="' + w + '" class="stk-w"></td>' +
+    '<td><input type="number" value="' + h + '" class="stk-h"></td>' +
+    '<td><input type="number" value="' + qty + '" class="stk-qty"></td>' +
+    '<td><button class="btn btn-sm btn-red" onclick="delRow(this)">×</button></td>';
+  tbody.appendChild(tr);
+}
+
+function addPieceRow(w, h, qty, pos, grind, rot) {
+  w = w || 1830; h = h || 2440; qty = qty || 2; grind = grind || 0; rot = (rot !== false);
+  var tbody = document.querySelector('#pieceTable tbody');
+  var count = tbody.children.length + 1;
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" value="' + (pos || count) + '" class="req-pos" style="width:28px;"></td>' +
+    '<td><input type="number" value="' + w + '" class="req-w"></td>' +
+    '<td><input type="number" value="' + h + '" class="req-h"></td>' +
+    '<td><input type="number" value="' + qty + '" class="req-qty"></td>' +
+    '<td><input type="number" value="' + grind + '" class="req-grind" step="0.5"></td>' +
+    '<td><input type="checkbox" class="req-rot" ' + (rot ? 'checked' : '') + '></td>' +
+    '<td><button class="btn btn-sm btn-red" onclick="delRow(this)">×</button></td>';
+  tbody.appendChild(tr);
+}
+
+function handleExcelFileUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  document.getElementById('fileUploadStatus').innerText = 'Loading: ' + file.name + '...';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = new Uint8Array(e.target.result);
+      var workbook = XLSX.read(data, { type: 'array' });
+      var firstSheetName = workbook.SheetNames[0];
+      var worksheet = workbook.Sheets[firstSheetName];
+      var rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      if (!rows || rows.length === 0) {
+        alert("The uploaded Excel file is empty!");
+        return;
+      }
+
+      var tbody = document.querySelector('#pieceTable tbody');
+      tbody.innerHTML = '';
+      var importedCount = 0;
+
+      rows.forEach(function(r, idx) {
+        if (!r || r.length === 0) return;
+        if (idx === 0 && (isNaN(r[0]) && isNaN(r[1]))) return;
+
+        var pos = importedCount + 1;
+        var w = 0, h = 0, qty = 1, grind = 0.0, rot = true;
+
+        if (r.length === 2) {
+          w = parseFloat(r[0]); h = parseFloat(r[1]);
+        } else if (r.length === 3) {
+          w = parseFloat(r[0]); h = parseFloat(r[1]); qty = parseInt(r[2], 10) || 1;
+        } else if (r.length === 4) {
+          pos = r[0]; w = parseFloat(r[1]); h = parseFloat(r[2]); qty = parseInt(r[3], 10) || 1;
+        } else if (r.length >= 5) {
+          pos = r[0]; w = parseFloat(r[1]); h = parseFloat(r[2]); qty = parseInt(r[3], 10) || 1;
+          grind = parseFloat(r[4]) || 0;
+          if (r.length >= 6) {
+            rot = (r[5] === 1 || r[5] === '1' || String(r[5]).toLowerCase() === 'true' || String(r[5]).toLowerCase() === 'yes');
+          }
+        }
+
+        if (w > 0 && h > 0) {
+          addPieceRow(w, h, qty, pos, grind, rot);
+          importedCount++;
+        }
+      });
+
+      document.getElementById('fileUploadStatus').innerText = '✓ Successfully loaded ' + importedCount + ' items from ' + file.name;
+      runOptimization();
+    } catch (err) {
+      alert("Error reading Excel file: " + err.message);
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+function downloadSampleExcel() {
+  var ws_data = [
+    ["Pos", "Width", "Height", "Qty", "Grind", "Rotate"],
+    [1, 1830, 2440, 2, 0, 1],
+    [2, 1220, 2440, 2, 0, 1]
+  ];
+  var ws = XLSX.utils.aoa_to_sheet(ws_data);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Glass_Sizes");
+  XLSX.writeFile(wb, "Glass_Cutting_Sizes_Template.xlsx");
+}
+
+function handleSearchCutSize() {
+  var query = document.getElementById('searchSizeInput').value.trim().toLowerCase();
+  var resBox = document.getElementById('searchResultDisplay');
+
+  if (!query || !globalLastOptimizationData) {
+    resBox.style.display = 'none';
+    return;
+  }
+
+  var matches = [];
+  globalLastOptimizationData.groupedPlans.forEach(function(plan, idx) {
+    plan.pieces.forEach(function(p) {
+      if (
+        String(p.finalW).includes(query) || 
+        String(p.finalH).includes(query) || 
+        String(p.pos).toLowerCase().includes(query)
+      ) {
+        matches.push({
+          patternNum: idx + 1,
+          sheetSize: plan.sheetW + ' × ' + plan.sheetH,
+          sizeStr: p.finalW + ' × ' + p.finalH + ' mm (Pos: ' + p.pos + ')'
+        });
+      }
+    });
+  });
+
+  resBox.style.display = 'block';
+  if (matches.length > 0) {
+    var uniqueMap = {};
+    matches.forEach(function(m) { uniqueMap[m.patternNum] = m; });
+    var htmlLinks = '';
+    for (var pNum in uniqueMap) {
+      var m = uniqueMap[pNum];
+      htmlLinks += '<a class="search-item-link" onclick="jumpToPattern(' + pNum + ')">👉 Pattern #' + pNum + ' (' + m.sheetSize + ') - Found: ' + m.sizeStr + '</a>';
+    }
+    resBox.innerHTML = '✓ Found matching size:<br>' + htmlLinks;
+    resBox.style.color = '#065f46';
+    resBox.style.background = '#f0fdf4';
+  } else {
+    resBox.innerHTML = '✗ Size <strong>"' + query + '"</strong> not found in any active sheet pattern!';
+    resBox.style.color = '#991b1b';
+    resBox.style.background = '#fef2f2';
+  }
+}
+
+function jumpToPattern(patternNum) {
+  var targetElement = document.getElementById('pattern-block-' + patternNum);
+  if (targetElement) {
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    targetElement.classList.add('highlight-pattern');
+    setTimeout(function() {
+      targetElement.classList.remove('highlight-pattern');
+    }, 2000);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   OPTIMIZATION ENGINE (MULTI-STOCK 2D GUILLOTINE BIN PACKING)
+---------------------------------------------------------------------------- */
+function runOptimization() {
+  var kerf = parseFloat(document.getElementById('kerf').value) || 0;
+  var trimX = parseFloat(document.getElementById('trimX').value) || 0;
+  var trimY = parseFloat(document.getElementById('trimY').value) || 0;
+  var thickness = parseFloat(document.getElementById('thickness').value) || 6.0;
+  var woName = document.getElementById('woName').value;
+  var matCode = document.getElementById('matCode').value;
+
+  var stockRows = document.querySelectorAll('#stockTable tbody tr');
+  var stock = [];
+  stockRows.forEach(function(r, idx) {
+    var origW = parseFloat(r.querySelector('.stk-w').value);
+    var origH = parseFloat(r.querySelector('.stk-h').value);
+    var qty = parseInt(r.querySelector('.stk-qty').value, 10);
+    
+    var totalTrimX = trimX * 2;
+    var totalTrimY = trimY * 2;
+    var usableW = origW - totalTrimX;
+    var usableH = origH - totalTrimY;
+
+    if (usableW > 0 && usableH > 0 && qty > 0) {
+      stock.push({ 
+        id: idx + 1, 
+        origW: origW, 
+        origH: origH, 
+        w: usableW, 
+        h: usableH, 
+        trimX: trimX, 
+        trimY: trimY, 
+        origQty: qty, 
+        qty: qty, 
+        used: 0, 
+        area: (origW * origH) / 1000000 
+      });
+    }
+  });
+
+  var pieceRows = document.querySelectorAll('#pieceTable tbody tr');
+  var pieces = [];
+
+  pieceRows.forEach(function(r) {
+    var pos = r.querySelector('.req-pos').value || '1';
+    var w = parseFloat(r.querySelector('.req-w').value);
+    var h = parseFloat(r.querySelector('.req-h').value);
+    var qty = parseInt(r.querySelector('.req-qty').value, 10);
+    var grind = parseFloat(r.querySelector('.req-grind').value) || 0;
+    var canRotate = r.querySelector('.req-rot').checked;
+    var cutW = w + (grind * 2);
+    var cutH = h + (grind * 2);
+
+    if (w > 0 && h > 0 && qty > 0) {
+      for (var i = 0; i < qty; i++) {
+        pieces.push({ pos: pos, finalW: w, finalH: h, cutW: cutW, cutH: cutH, grind: grind, canRotate: canRotate, area: (w * h) / 1000000 });
+      }
+    }
+  });
+
+  if (pieces.length === 0 || stock.length === 0) return;
+
+  var bestOverallPlans = null;
+  var bestPackedPieces = [];
+  var maxPackedCount = -1;
+  var bestTotalStockArea = 0;
+
+  var sortModes = [
+    function(a, b) { return (b.cutW * b.cutH) - (a.cutW * a.cutH) || (!a.canRotate && b.canRotate ? -1 : 1); },
+    function(a, b) { return Math.max(b.cutW, b.cutH) - Math.max(a.cutW, a.cutH) || (b.cutW * b.cutH) - (a.cutW * a.cutH); },
+    function(a, b) { return (!a.canRotate && b.canRotate ? -1 : 1) || (b.cutW * b.cutH) - (a.cutW * a.cutH); }
+  ];
+
+  var chooseBestStockForPiece = function(piece, candidateStock, parentTrimX, parentTrimY) {
+    var sheetMaxW = candidateStock.w;
+    var sheetMaxH = candidateStock.h;
+
+    var fitsNormal = (piece.cutW <= sheetMaxW && piece.cutH <= sheetMaxH);
+    var fitsRotated = piece.canRotate && (piece.cutH <= sheetMaxW && piece.cutW <= sheetMaxH);
+
+    if (!fitsNormal && !fitsRotated) return null;
+
+    var targetW = fitsNormal ? piece.cutW : piece.cutH;
+    var targetH = fitsNormal ? piece.cutH : piece.cutW;
+
+    var sheetArea = sheetMaxW * sheetMaxH;
+    var pieceArea = targetW * targetH;
+    var countAcrossW = Math.max(1, Math.floor(sheetMaxW / targetW));
+    var countAcrossH = Math.max(1, Math.floor(sheetMaxH / targetH));
+    var fullFitCount = countAcrossW * countAcrossH;
+    var exactFullSheetFit = (Math.abs(targetW - sheetMaxW) < 0.01 && Math.abs(targetH - sheetMaxH) < 0.01);
+    var exactHalfWidthFit = (Math.abs(sheetMaxW - (targetW * 2)) < 0.01 && Math.abs(sheetMaxH - targetH) < 0.01) ||
+      (Math.abs(sheetMaxH - (targetH * 2)) < 0.01 && Math.abs(sheetMaxW - targetW) < 0.01);
+    var exactDoubleFit = (Math.abs(sheetMaxW - (targetW * 2)) < 0.01 && Math.abs(sheetMaxH - targetH) < 0.01) ||
+      (Math.abs(sheetMaxH - (targetH * 2)) < 0.01 && Math.abs(sheetMaxW - targetW) < 0.01) ||
+      (Math.abs(sheetMaxW - (targetH * 2)) < 0.01 && Math.abs(sheetMaxH - targetW) < 0.01) ||
+      (Math.abs(sheetMaxH - (targetW * 2)) < 0.01 && Math.abs(sheetMaxW - targetH) < 0.01);
+    var niceGridFit = (Math.abs((sheetMaxW / targetW) - Math.round(sheetMaxW / targetW)) < 0.001) || (Math.abs((sheetMaxH / targetH) - Math.round(sheetMaxH / targetH)) < 0.001);
+
+    var leftoverArea = sheetArea - (fullFitCount * pieceArea);
+    var dimGap = Math.abs(sheetMaxW - targetW) + Math.abs(sheetMaxH - targetH);
+    var leftoverRatio = (leftoverArea / Math.max(1, sheetArea)) * 100;
+    var preciseCountPenalty = (fullFitCount > 0) ? (20000 * (3 - Math.min(3, fullFitCount))) : 0;
+
+    var score = leftoverArea + (dimGap * 22) + (leftoverRatio * 120) + (fitsRotated ? 250 : 0) + preciseCountPenalty;
+
+    if (exactFullSheetFit) score -= 500000;
+    if (exactDoubleFit) score -= 320000;
+    if (exactHalfWidthFit) score -= 220000;
+    if (fullFitCount >= 2) score -= 160000;
+    if (niceGridFit) score -= 120000;
+    if (piece.cutW <= sheetMaxW && piece.cutH <= sheetMaxH) score -= 12000;
+
+    return {
+      score: score,
+      fitsRotated: fitsRotated,
+      targetW: targetW,
+      targetH: targetH,
+      sheetW: candidateStock.w,
+      sheetH: candidateStock.h,
+      fitCount: fullFitCount
+    };
+  };
+
+  var splitRules = ['MINAS', 'SAS', 'LAS'];
+
+  for (var sRIdx = 0; sRIdx < splitRules.length; sRIdx++) {
+    var sRule = splitRules[sRIdx];
+    for (var sMIdx = 0; sMIdx < sortModes.length; sMIdx++) {
+      var sMode = sortModes[sMIdx];
+      var tempStock = stock.map(function(s) { return Object.assign({}, s); });
+      var tempPieces = pieces.map(function(p) { return Object.assign({}, p); });
+      tempPieces.sort(sMode);
+
+      var tempPlans = [];
+      var tempPacked = [];
+      var tempStockAreaUsed = 0;
+
+      while (tempPieces.length > 0) {
+        var bestStockIdx = -1;
+        var bestScore = Infinity;
+        var samplePiece = tempPieces[0];
+
+        for (var st = 0; st < tempStock.length; st++) {
+          if (tempStock[st].qty <= 0) continue;
+          var fit = chooseBestStockForPiece(samplePiece, tempStock[st], tempStock[st].trimX, tempStock[st].trimY);
+          if (fit) {
+            var score = fit.score;
+            if (score < bestScore) {
+              bestScore = score;
+              bestStockIdx = st;
+            }
+          }
+        }
+
+        if (bestStockIdx === -1) {
+          for (var sk = 0; sk < tempStock.length; sk++) {
+            if (tempStock[sk].qty > 0) { bestStockIdx = sk; break; }
+          }
+        }
+
+        if (bestStockIdx === -1) break;
+
+        var currentStock = tempStock[bestStockIdx];
+        var sheetW = currentStock.w;
+        var sheetH = currentStock.h;
+        
+        var originX = currentStock.trimX;
+        var originY = currentStock.trimY;
+
+        var freeRects = [{ x: originX, y: originY, w: sheetW, h: sheetH }];
+        var placed = [];
+
+        var packedInSheet = true;
+        while (packedInSheet && tempPieces.length > 0) {
+          var bestRectIdx = -1;
+          var bestPieceIdx = -1;
+          var bestRotated = false;
+          var minScore = Infinity;
+
+          for (var r = 0; r < freeRects.length; r++) {
+            var fr = freeRects[r];
+            for (var p = 0; p < tempPieces.length; p++) {
+              var piece = tempPieces[p];
+
+              var maxAllowedX = currentStock.origW - currentStock.trimX;
+              var maxAllowedY = currentStock.origH - currentStock.trimY;
+
+              var availableWidth = maxAllowedX - fr.x;
+              var availableHeight = maxAllowedY - fr.y;
+
+              if (piece.cutW <= fr.w && piece.cutH <= fr.h && piece.cutW <= availableWidth && piece.cutH <= availableHeight) {
+                var rectWaste = (fr.w * fr.h) - (piece.cutW * piece.cutH);
+                var rectEdge = Math.abs(fr.w - piece.cutW) + Math.abs(fr.h - piece.cutH);
+                var exactFitBonus = (piece.cutW === fr.w && piece.cutH === fr.h) ? -120000 : 0;
+                var scoreP = rectWaste + (rectEdge * 18) + exactFitBonus;
+                if (!piece.canRotate) scoreP += 250;
+                if (scoreP < minScore) {
+                  minScore = scoreP;
+                  bestRectIdx = r;
+                  bestPieceIdx = p;
+                  bestRotated = false;
+                }
+              }
+
+              var rotAvailWidth = maxAllowedX - fr.x;
+              var rotAvailHeight = maxAllowedY - fr.y;
+
+              if (piece.canRotate && piece.cutH <= fr.w && piece.cutW <= fr.h && piece.cutH <= rotAvailWidth && piece.cutW <= rotAvailHeight) {
+                var rotWaste = (fr.w * fr.h) - (piece.cutH * piece.cutW);
+                var rotEdge = Math.abs(fr.w - piece.cutH) + Math.abs(fr.h - piece.cutW);
+                var rotExactFitBonus = (piece.cutH === fr.w && piece.cutW === fr.h) ? -120000 : 0;
+                var scoreR = rotWaste + (rotEdge * 18) + rotExactFitBonus + 10;
+                if (scoreR < minScore) {
+                  minScore = scoreR;
+                  bestRectIdx = r;
+                  bestPieceIdx = p;
+                  bestRotated = true;
+                }
+              }
+            }
+          }
+
+          if (bestPieceIdx !== -1) {
+            var chosenPiece = tempPieces.splice(bestPieceIdx, 1)[0];
+            var frChosen = freeRects.splice(bestRectIdx, 1)[0];
+            var pw = bestRotated ? chosenPiece.cutH : chosenPiece.cutW;
+            var ph = bestRotated ? chosenPiece.cutW : chosenPiece.cutH;
+
+            placed.push({
+              pos: chosenPiece.pos,
+              finalW: chosenPiece.finalW,
+              finalH: chosenPiece.finalH,
+              cutW: pw,
+              cutH: ph,
+              isRot: bestRotated,
+              x: frChosen.x,
+              y: frChosen.y,
+              sign: bestRotated ? '+' : ''
+            });
+
+            tempPacked.push(chosenPiece);
+
+            var rightW = frChosen.w - pw - kerf;
+            var bottomH = frChosen.h - ph - kerf;
+
+            if (rightW > 0 && bottomH > 0) {
+              if (sRule === 'SAS') {
+                if (pw <= ph) {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: ph });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: frChosen.w, h: bottomH });
+                } else {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: frChosen.h });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: pw, h: bottomH });
+                }
+              } else if (sRule === 'LAS') {
+                if (pw >= ph) {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: ph });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: frChosen.w, h: bottomH });
+                } else {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: frChosen.h });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: pw, h: bottomH });
+                }
+              } else {
+                if (pw * bottomH <= rightW * ph) {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: ph });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: frChosen.w, h: bottomH });
+                } else {
+                  freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: frChosen.h });
+                  freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: pw, h: bottomH });
+                }
+              }
+            } else if (rightW > 0) {
+              freeRects.push({ x: frChosen.x + pw + kerf, y: frChosen.y, w: rightW, h: frChosen.h });
+            } else if (bottomH > 0) {
+              freeRects.push({ x: frChosen.x, y: frChosen.y + ph + kerf, w: frChosen.w, h: bottomH });
+            }
+
+            freeRects = freeRects.filter(function(rect) {
+              return rect && rect.w > 1 && rect.h > 1 && rect.x >= originX && rect.y >= originY &&
+                (rect.x + rect.w) <= (currentStock.origW - currentStock.trimX) &&
+                (rect.y + rect.h) <= (currentStock.origH - currentStock.trimY);
+            });
+
+            freeRects.sort(function(a, b) {
+              if (a.y !== b.y) return a.y - b.y;
+              if (a.x !== b.x) return a.x - b.x;
+              var areaA = a.w * a.h;
+              var areaB = b.w * b.h;
+              if (areaA !== areaB) return areaA - areaB;
+              return (a.w + a.h) - (b.w + b.h);
+            });
+          } else {
+            packedInSheet = false;
+          }
+        }
+
+        if (placed.length === 0) break;
+
+        var maxSheetW = currentStock.origW - currentStock.trimX;
+        var maxSheetH = currentStock.origH - currentStock.trimY;
+
+        var offcuts = freeRects
+          .filter(function(fr) { return fr.w >= 10 && fr.h >= 10 && fr.x < maxSheetW && fr.y < maxSheetH; })
+          .map(function(fr, idx) {
+            return {
+              id: 'OFC-' + (idx + 1),
+              x: fr.x,
+              y: fr.y,
+              w: Math.min(fr.w, maxSheetW - fr.x),
+              h: Math.min(fr.h, maxSheetH - fr.y),
+              wDim: Math.round(Math.min(fr.w, maxSheetW - fr.x)),
+              hDim: Math.round(Math.min(fr.h, maxSheetH - fr.y)),
+              areaSqM: ((Math.min(fr.w, maxSheetW - fr.x) * Math.min(fr.h, maxSheetH - fr.y)) / 1000000).toFixed(3)
+            };
+          });
+
+        currentStock.qty--;
+        currentStock.used++;
+        tempStockAreaUsed += currentStock.area;
+
+        tempPlans.push({
+          sheetW: currentStock.origW,
+          sheetH: currentStock.origH,
+          trimX: currentStock.trimX,
+          trimY: currentStock.trimY,
+          pieces: placed,
+          offcuts: offcuts,
+          usedArea: placed.reduce(function(acc, p) { return acc + ((p.finalW * p.finalH) / 1000000); }, 0),
+          sheetArea: currentStock.area
+        });
+      }
+
+      if (tempPacked.length > maxPackedCount) {
+        maxPackedCount = tempPacked.length;
+        bestOverallPlans = tempPlans;
+        bestPackedPieces = tempPacked;
+        bestTotalStockArea = tempStockAreaUsed;
+      }
+    }
+  }
+
+  var finalPlans = bestOverallPlans || [];
+
+  var totalCutArea = bestPackedPieces.reduce(function(acc, p) { return acc + p.area; }, 0);
+  var totalPiecesCount = bestPackedPieces.length;
+
+  var groupedPlans = [];
+  finalPlans.forEach(function(p) {
+    var sig = p.sheetW + 'x' + p.sheetH + '_' + p.pieces.length + '_' + p.usedArea.toFixed(2);
+    var m = groupedPlans.find(function(g) { return g.sig === sig; });
+    if (m) m.count++;
+    else groupedPlans.push(Object.assign({ sig: sig, count: 1 }, p));
+  });
+
+  stock.forEach(function(s) {
+    var totalUsedOfThisStock = finalPlans.filter(function(p) { return p.sheetW === s.origW && p.sheetH === s.origH; }).length;
+    s.used = totalUsedOfThisStock;
+    s.qty = s.origQty - totalUsedOfThisStock;
+  });
+
+  var missingSizes = [];
+  var requiredCountMap = {};
+  pieces.forEach(function(piece) {
+    var key = (piece.pos || 'POS') + '|' + piece.finalW + 'x' + piece.finalH;
+    requiredCountMap[key] = (requiredCountMap[key] || 0) + 1;
+  });
+
+  var usedCountMap = {};
+  bestPackedPieces.forEach(function(piece) {
+    var key = (piece.pos || 'POS') + '|' + piece.finalW + 'x' + piece.finalH;
+    usedCountMap[key] = (usedCountMap[key] || 0) + 1;
+  });
+
+  Object.keys(requiredCountMap).forEach(function(key) {
+    var required = requiredCountMap[key];
+    var used = usedCountMap[key] || 0;
+    if (used < required) {
+      var parts = key.split('|')[1].split('x');
+      var pos = key.split('|')[0];
+      missingSizes.push({ pos: pos, w: parseFloat(parts[0]) || 0, h: parseFloat(parts[1]) || 0, qty: required - used });
+    }
+  });
+
+  globalLastOptimizationData = { groupedPlans: groupedPlans };
+  updatePaymentSummary();
+
+  renderExactReport({
+    woName: woName,
+    matCode: matCode,
+    thickness: thickness,
+    kerf: kerf,
+    trimX: trimX,
+    trimY: trimY,
+    totalPiecesCount: totalPiecesCount,
+    totalCutArea: totalCutArea,
+    totalStockUsedArea: bestTotalStockArea,
+    stock: stock,
+    groupedPlans: groupedPlans,
+    missingSizes: missingSizes
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* EXACT REPORT RENDERER */
+/* -------------------------------------------------------------------------- */
+function renderExactReport(data) {
+  var container = document.getElementById('fullReportContainer');
+  container.innerHTML = '';
+
+  var dateStr = '26-08-2026 17:46:24';
+  
+  var totalUsedPieces = data.totalPiecesCount;
+  var totalCutArea = data.totalCutArea;
+  var totalStockUsedArea = data.totalStockUsedArea;
+  var totalWasteArea = totalStockUsedArea > 0 ? (totalStockUsedArea - totalCutArea) : 0;
+  var totalWastePerc = totalStockUsedArea > 0 ? ((totalWasteArea / totalStockUsedArea) * 100) : 0;
+  var totalSheetsUsed = data.groupedPlans.reduce(function(a, c) { return a + c.count; }, 0);
+
+  var kgFactor = data.thickness * 2.50;
+  var usedPieceWeightKg = (totalCutArea * kgFactor).toFixed(2);
+  var totalWasteKg = (totalWasteArea * kgFactor).toFixed(2);
+
+  var realWasteArea = (totalWasteArea * 0.95);
+  var realWastePerc = totalStockUsedArea > 0 ? ((realWasteArea / totalStockUsedArea) * 100) : 0;
+  var realWasteKg = (realWasteArea * kgFactor).toFixed(2);
+
+  var sheetStats = data.stock.map(function(s) {
+    var usedPlans = data.groupedPlans.filter(function(p) { return p.sheetW === s.origW && p.sheetH === s.origH; });
+    var sheetUsedArea = 0;
+    var sheetCutArea = 0;
+    usedPlans.forEach(function(p) {
+      sheetUsedArea += (p.sheetArea * p.count);
+      sheetCutArea += (p.usedArea * p.count);
+    });
+    var wstArea = sheetUsedArea > 0 ? (sheetUsedArea - sheetCutArea) : 0;
+    var totalWstPct = sheetUsedArea > 0 ? ((wstArea / sheetUsedArea) * 100).toFixed(2) : '0.00';
+    var realWstAreaVal = (wstArea * 0.95).toFixed(2);
+    var realWstPctVal = sheetUsedArea > 0 ? (((wstArea * 0.95) / sheetUsedArea) * 100).toFixed(2) : '0.00';
+    return Object.assign({}, s, {
+      sheetUsedArea: (s.used * s.area).toFixed(2),
+      totalWstPct: totalWstPct + '%',
+      realWstDisplay: realWstAreaVal + ' mq (' + realWstPctVal + '%)'
+    });
+  });
+
+  var summaryShell = document.createElement('div');
+  summaryShell.className = 'summary-shell';
+
+  var missingSizesHTML = (data.missingSizes && data.missingSizes.length > 0)
+    ? data.missingSizes.map(function(item) {
+        return '<div class="pending-red-item"><div><strong>Pos ' + (item.pos || 'N/A') + ' • Missing Size</strong><small style="display:block; color:#7f1d1d;">' + item.w + ' × ' + item.h + ' mm</small></div><div style="text-align:right;"><strong style="color:#b91c1c;">' + item.qty + ' pcs</strong><small>Not packed</small></div></div>';
+      }).join('')
+    : '<div class="summary-pack-item"><div><strong>All Required Sizes Packed</strong><small>No missing size</small></div></div>';
+
+  var missingWarningBox = (data.missingSizes && data.missingSizes.length > 0)
+    ? '<div class="pending-red-box"><div class="pending-red-box-title">Pending Cut Size - Stock Not Available</div>' + data.missingSizes.map(function(item) { return '<div class="pending-red-item"><div><span>❌ Pos ' + (item.pos || 'N/A') + ' • ' + item.w + ' × ' + item.h + ' mm</span></div><div>' + item.qty + ' pcs pending</div></div>'; }).join('') + '</div>'
+    : '<div class="pending-red-box" style="background:#ecfdf5; border-color:#86efac; color:#166534;"><div class="pending-red-box-title" style="color:#166534;">All sizes covered</div><div>All required cut sizes are available in selected stock.</div></div>';
+
+  var groupedSheetMap = {};
+  data.groupedPlans.forEach(function(plan) {
+    var key = plan.sheetW + 'x' + plan.sheetH;
+    if (!groupedSheetMap[key]) {
+      groupedSheetMap[key] = {
+        sheetW: plan.sheetW,
+        sheetH: plan.sheetH,
+        packCount: 0,
+        pieceCount: 0,
+        wastePct: 0
+      };
+    }
+    groupedSheetMap[key].packCount += plan.count || 1;
+    groupedSheetMap[key].pieceCount += plan.pieces.length;
+    groupedSheetMap[key].wastePct += ((plan.sheetArea - plan.usedArea) / Math.max(plan.sheetArea, 1)) * 100 * (plan.count || 1);
+  });
+
+  var groupedSheetSummary = Object.values(groupedSheetMap).map(function(sheet, idx) {
+    var avgWaste = sheet.packCount > 0 ? (sheet.wastePct / sheet.packCount).toFixed(2) : '0.00';
+    return '<div class="summary-pack-item">' +
+      '<div><strong>Sheet Group ' + (idx + 1) + '</strong><small>' + sheet.sheetW + ' × ' + sheet.sheetH + ' mm</small></div>' +
+      '<div style="text-align:right;"><strong>' + sheet.pieceCount + ' pcs</strong><small>' + sheet.packCount + ' pack(s) • ' + avgWaste + '% waste</small></div>' +
+    '</div>';
+  }).join('') || '<div class="summary-pack-item"><div><strong>No stock pack generated</strong></div></div>';
+
+  var piecePackSummary = [];
+  data.groupedPlans.forEach(function(plan, pIdx) {
+    plan.pieces.forEach(function(piece) {
+      var key = piece.pos + '|' + piece.finalW + '|' + piece.finalH;
+      if (!piecePackSummary[key]) {
+        piecePackSummary[key] = { pos: piece.pos, finalW: piece.finalW, finalH: piece.finalH, qty: 0 };
+      }
+      piecePackSummary[key].qty += 1;
+    });
+  });
+
+  var pieceSummaryList = Object.values(piecePackSummary).map(function(piece) {
+    return '<div class="summary-pack-item"><div><strong>Pos ' + piece.pos + '</strong><small>' + piece.finalW + ' × ' + piece.finalH + ' mm</small></div><div style="text-align:right;"><strong>' + piece.qty + ' pcs</strong></div></div>';
+  }).join('') || '<div class="summary-pack-item"><div><strong>No piece data</strong></div></div>';
+
+  summaryShell.innerHTML =
+    '<div class="summary-shell-header">' +
+      '<div class="summary-shell-title">Professional Production Summary</div>' +
+      '<div style="font-size:11px; font-weight:700; color:#475569;">' + data.groupedPlans.length + ' Pack(s) • ' + totalUsedPieces + ' Piece(s)</div>' +
+    '</div>' +
+    '<div class="summary-kpis">' +
+      '<div class="summary-kpi"><div class="label">Used Sheets</div><div class="value">' + totalSheetsUsed + '</div><div class="sub">Stock sheet packs</div></div>' +
+      '<div class="summary-kpi"><div class="label">Total Area</div><div class="value">' + totalCutArea.toFixed(2) + '</div><div class="sub">m² cut area</div></div>' +
+      '<div class="summary-kpi"><div class="label">Waste</div><div class="value">' + totalWastePerc.toFixed(2) + '%</div><div class="sub">From stock usage</div></div>' +
+      '<div class="summary-kpi"><div class="label">Weight</div><div class="value">' + usedPieceWeightKg + '</div><div class="sub">Kg approx.</div></div>' +
+    '</div>' +
+    '<div class="summary-group-wrap">' +
+      '<div class="summary-box">' +
+        '<div class="summary-box-title">Grouped Stock Sheet Results</div>' +
+        '<div class="summary-pack-list">' + groupedSheetSummary + '</div>' +
+      '</div>' +
+      '<div class="summary-box">' +
+        '<div class="summary-box-title">Missing Size / Not Used List</div>' +
+        '<div class="summary-pack-list">' + missingSizesHTML + '</div>' +
+        '' + missingWarningBox + '' +
+      '</div>' +
+    '</div>' +
+    '<div class="summary-group-wrap" style="margin-top:12px;">' +
+      '<div class="summary-box">' +
+        '<div class="summary-box-title">Cut Piece Pack Summary</div>' +
+        '<div class="summary-pack-list">' + pieceSummaryList + '</div>' +
+      '</div>' +
+      '<div class="summary-box">' +
+        '<div class="summary-box-title">Payment / Job Estimate</div>' +
+        '<div class="summary-pack-list">' +
+          '<div class="summary-pack-item"><div><strong>Customer</strong><small>' + (document.getElementById('custName').value || 'Customer Name') + '</small></div><div style="text-align:right;"><strong>' + (document.getElementById('paymentStatus').value || 'Pending') + '</strong><small>Status</small></div></div>' +
+          '<div class="summary-pack-item"><div><strong>Job Type</strong><small>' + (document.getElementById('jobType').value || 'Glass Cutting Job') + '</small></div><div style="text-align:right;"><strong>₹' + (parseFloat(document.getElementById('ratePerSqm').value) || 0).toFixed(2) + '</strong><small>/ sq.m</small></div></div>' +
+          '<div class="summary-pack-item"><div><strong>Approx Amount</strong><small>English + Hindi</small></div><div style="text-align:right;"><strong>₹' + ((totalCutArea * (parseFloat(document.getElementById('ratePerSqm').value) || 0))).toFixed(2) + '</strong><small>Estimate</small></div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  container.appendChild(summaryShell);
+
+  var page1 = document.createElement('div');
+  page1.className = 'opty-page';
+  page1.innerHTML = 
+    '<div class="rep-top-header">' +
+      '<span class="left-title">Optimization Printout</span>' +
+      '<span>GLASS OPTIMIZER PRO</span>' +
+      '<span>Date/Time: ' + dateStr + ' - Page 1</span>' +
+    '</div>' +
+
+    '<div class="gray-title-bar"><span>WORKORDER</span><span>Table</span></div>' +
+
+    '<div class="info-grid">' +
+      '<div>' +
+        '<div class="info-row"><span class="info-lbl">Work Order</span><span class="info-val"><strong>' + data.woName + '</strong></span></div>' +
+        '<div class="info-row"><span class="info-lbl">Status</span><span class="info-val">To be Worked</span></div>' +
+        '<div class="info-row"><span class="info-lbl">Date</span><span class="info-val">26-08-2026</span></div>' +
+        '<div class="info-row"><span class="info-lbl">U.M.</span><span class="info-val">mm &nbsp;&nbsp;&nbsp;&nbsp; Kg &nbsp;&nbsp;&nbsp;&nbsp; mq</span></div>' +
+        '<div class="info-row"><span class="info-lbl">Work Order Descr.</span><span class="info-val"></span></div>' +
+        '<div style="font-weight:bold; margin-top:8px; margin-bottom:2px;">Material Code</div>' +
+        '<div class="info-row"><span class="info-lbl">Material Code</span><span class="info-val"><strong>' + data.matCode + '</strong></span></div>' +
+        '<div class="info-row"><span class="info-lbl">Thickness</span><span class="info-val">' + data.thickness.toFixed(1) + ' mm</span></div>' +
+        '<div class="info-row"><span class="info-lbl">Weight</span><span class="info-val">2.50 Kg</span></div>' +
+      '</div>' +
+      '<div>' +
+        '<div class="info-row"><span class="info-lbl">Type</span><span class="info-val">CNC</span></div>' +
+        '<div class="info-row"><span class="info-lbl">N.C.</span><span class="info-val">TECNOS UR</span></div>' +
+        '<div class="info-row"><span class="info-lbl">Cutting Levels</span><span class="info-val">5</span></div>' +
+        '<div class="info-row"><span class="info-lbl">Zero Sheet Position</span><span class="info-val">Left Bottom</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="gray-title-bar"><span>OPTIMIZATION RESULTS</span><span>Parameters</span></div>' +
+
+    '<div class="info-grid">' +
+      '<div>' +
+        '<table class="res-table">' +
+          '<tr><td class="res-lbl">Number of Pieces</td><td class="res-qty">' + totalUsedPieces + '</td><td class="res-pct"></td><td class="res-val1"></td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Number of Positions</td><td class="res-qty">' + (data.stock.length > 0 ? 5 : 0) + '</td><td class="res-pct"></td><td class="res-val1"></td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Total Area</td><td class="res-qty"></td><td class="res-pct"></td><td class="res-val1">' + totalCutArea.toFixed(2) + ' mq</td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Number of Used Pieces</td><td class="res-qty">' + totalUsedPieces + '</td><td class="res-pct"></td><td class="res-val1"></td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Used Piece Area</td><td class="res-qty"></td><td class="res-pct">100.00 %</td><td class="res-val1">' + totalCutArea.toFixed(2) + ' mq</td><td class="res-val2">' + usedPieceWeightKg + ' Kg</td></tr>' +
+          '<tr><td class="res-lbl">Cutting Plans</td><td class="res-qty">' + data.groupedPlans.length + '</td><td class="res-pct"></td><td class="res-val1"></td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Used Sheets</td><td class="res-qty">' + totalSheetsUsed + '</td><td class="res-pct"></td><td class="res-val1"></td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Used Sheet Area</td><td class="res-qty"></td><td class="res-pct"></td><td class="res-val1">' + totalStockUsedArea.toFixed(2) + ' mq</td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Sold Pieces</td><td class="res-qty"></td><td class="res-pct"></td><td class="res-val1">' + (totalCutArea * 1.02).toFixed(2) + ' mq</td><td class="res-val2"></td></tr>' +
+          '<tr><td class="res-lbl">Real Waste</td><td class="res-qty"></td><td class="res-pct">' + realWastePerc.toFixed(2) + ' %</td><td class="res-val1">' + realWasteArea.toFixed(2) + ' mq</td><td class="res-val2">' + realWasteKg + ' Kg</td></tr>' +
+          '<tr><td class="res-lbl">Total Waste</td><td class="res-qty"></td><td class="res-pct">' + totalWastePerc.toFixed(2) + ' %</td><td class="res-val1">' + totalWasteArea.toFixed(2) + ' mq</td><td class="res-val2">' + totalWasteKg + ' Kg</td></tr>' +
+          '<tr><td class="res-lbl">Reusable Waste</td><td class="res-qty"></td><td class="res-pct">' + totalWastePerc.toFixed(2) + ' %</td><td class="res-val1">' + totalWasteArea.toFixed(2) + ' mq</td><td class="res-val2">' + totalWasteKg + ' Kg</td></tr>' +
+          '<tr><td class="res-lbl">Final Waste</td><td class="res-qty"></td><td class="res-pct">0.00 %</td><td class="res-val1">0.00 mq</td><td class="res-val2">0.00 Kg</td></tr>' +
+        '</table>' +
+      '</div>' +
+      '<div>' +
+        '<div class="info-row"><span class="info-lbl">X1 / Y1 Trims</span><span class="info-val">' + data.trimX.toFixed(1) + ' mm &nbsp;&nbsp;&nbsp;&nbsp; ' + data.trimY.toFixed(1) + ' mm</span></div>' +
+        '<div class="info-row"><span class="info-lbl">X/Y Waste</span><span class="info-val">' + data.kerf.toFixed(1) + ' mm &nbsp;&nbsp;&nbsp;&nbsp; ' + data.kerf.toFixed(1) + ' mm</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="gray-title-bar" style="justify-content:center;"><span>AVAILABLE SHEETS LIST</span></div>' +
+    '<table class="tbl-sheets">' +
+      '<thead>' +
+        '<tr><th>Pos.</th><th>X Dim.</th><th>Y Dim.</th><th>Available</th><th>Used</th><th>Remaining</th><th>Used (mq)</th><th>Total Wst. (%)</th><th style="background:#e2e8f0; color:#0f172a;">Real Waste (mq / %)</th></tr>' +
+      '</thead>' +
+      '<tbody>' +
+        sheetStats.map(function(s, idx) {
+          return '<tr>' +
+            '<td>' + (idx + 1) + '</td>' +
+            '<td>' + s.origW.toFixed(1) + ' mm</td>' +
+            '<td>' + s.origH.toFixed(1) + ' mm</td>' +
+            '<td>' + s.origQty + '</td>' +
+            '<td>' + s.used + '</td>' +
+            '<td>' + s.qty + '</td>' +
+            '<td>' + s.sheetUsedArea + ' mq</td>' +
+            '<td><strong>' + s.totalWstPct + '</strong></td>' +
+            '<td style="font-weight:bold; color:#b91c1c;">' + s.realWstDisplay + '</td>' +
+          '</tr>';
+        }).join('') +
+      '</tbody>' +
+    '</table>' +
+
+    '<div class="opty-foot-bar">' +
+      '<span>DEVELOPER: <strong>NABA JYOTI DUWARAH</strong> &nbsp;|&nbsp; PH: +91 9113891448</span>' +
+      '<span>GLASS OPTIMIZER PRO</span>' +
+    '</div>';
+  container.appendChild(page1);
+
+  if (data.groupedPlans.length === 0) return;
+
+  var pagePlans = [];
+  var currentPair = [];
+
+  data.groupedPlans.forEach(function(plan, i) {
+    currentPair.push(Object.assign({ planIdx: i + 1 }, plan));
+    if (currentPair.length === 2 || i === data.groupedPlans.length - 1) {
+      pagePlans.push(currentPair.slice());
+      currentPair = [];
+    }
+  });
+
+  pagePlans.forEach(function(pair, pIdx) {
+    var pageCad = document.createElement('div');
+    pageCad.className = 'opty-page';
+
+    var plansCadHTML = pair.map(function(plan) {
+      var cadBoxW = 440;
+      var scale = cadBoxW / plan.sheetW;
+      var cadBoxH = plan.sheetH * scale;
+
+      var pieceSummary = {};
+      plan.pieces.forEach(function(p) {
+        var k = p.pos + '_' + p.finalW + 'x' + p.finalH;
+        if (!pieceSummary[k]) pieceSummary[k] = { pos: p.pos, w: p.finalW, h: p.finalH, qty: 0, rot: p.isRot };
+        pieceSummary[k].qty++;
+      });
+
+      var pieceElements = plan.pieces.map(function(p) {
+        var left = p.x * scale;
+        var top = p.y * scale;
+        var width = p.cutW * scale;
+        var height = p.cutH * scale;
+        var markSymbol = (p.sign || '') + p.pos + '/';
+
+        return '<div class="cad-cut-piece" style="left:' + left + 'px; top:' + top + 'px; width:' + width + 'px; height:' + height + 'px;">' +
+          '<div class="piece-center-label">' +
+            '<div style="font-size:10pt; font-weight:900;">' + markSymbol + '</div>' +
+            '<div style="font-size:8pt; font-weight:700;">' + p.finalW + ' × ' + p.finalH + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      var offcutElements = plan.offcuts.map(function(off) {
+        var left = off.x * scale;
+        var top = off.y * scale;
+        var width = off.w * scale;
+        var height = off.h * scale;
+
+        return '<div class="cad-offcut-box" style="left:' + left + 'px; top:' + top + 'px; width:' + width + 'px; height:' + height + 'px;">' +
+          '<div class="offcut-center-label">' +
+            '<div style="font-size:8pt; font-weight:900;">✂ OFFCUT</div>' +
+            '<div style="font-size:7.5pt; font-weight:800;">' + off.wDim + ' × ' + off.hDim + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      var actualRows = Object.values(pieceSummary).map(function(ps) {
+        return '<tr class="piece-highlight-row">' +
+          '<td><strong>' + ps.pos + '/</strong></td>' +
+          '<td><strong>' + ps.w + ' × ' + ps.h + '</strong></td>' +
+          '<td><strong>' + ps.qty + ' pcs</strong></td>' +
+          '<td>' + (ps.rot ? 'YES (Rotated)' : 'NORMAL') + '</td>' +
+        '</tr>';
+      }).join('');
+
+      var offcutRows = plan.offcuts.map(function(o) {
+        return '<tr class="offcut-highlight-row">' +
+          '<td>' + o.id + '</td>' +
+          '<td><strong>' + o.wDim + ' × ' + o.hDim + ' mm</strong></td>' +
+          '<td>' + o.areaSqM + ' m²</td>' +
+        '</tr>';
+      }).join('');
+
+      return '<div class="draw-plan-block" id="pattern-block-' + plan.planIdx + '">' +
+        '<div class="draw-plan-header">' +
+          '<span>CUT PATTERN *' + plan.planIdx + '/' + data.groupedPlans.length + '</span>' +
+          '<span style="font-size:11pt; text-decoration: underline;">' + plan.sheetW.toFixed(1) + ' × ' + plan.sheetH.toFixed(1) + ' × ' + plan.count + ' (Sheets)</span>' +
+          '<span style="font-weight:normal; font-size:8pt;">Waste: <strong>' + (((plan.sheetArea - plan.usedArea) / plan.sheetArea) * 100).toFixed(2) + '%</strong></span>' +
+        '</div>' +
+        '<div class="plan-flex-wrapper">' +
+          '<div class="draw-outer-box" style="width:' + cadBoxW + 'px; height:' + cadBoxH + 'px;">' +
+            pieceElements + offcutElements +
+          '</div>' +
+          '<div class="plan-sidebar-info">' +
+            '<div class="data-box" style="border-left: 3px solid #0284c7;">' +
+              '<div class="data-box-title"><span style="color:#0369a1;">✓ Actual Cut Sizes (Customer Pcs)</span><span>' + plan.pieces.length + ' Pieces</span></div>' +
+              '<table class="data-box-table">' +
+                '<thead><tr><th>Mark</th><th>Finished Size (mm)</th><th>Qty</th><th>Orientation</th></tr></thead>' +
+                '<tbody>' + actualRows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+            '<div class="data-box" style="border-left: 3px solid #dc2626;">' +
+              '<div class="data-box-title"><span style="color:#b91c1c;">✂ Remainder Off-Cut Size (Scrap)</span><span style="color:#b91c1c;">' + plan.offcuts.length + ' Offcut(s)</span></div>' +
+              '<table class="data-box-table">' +
+                '<thead><tr><th>Block ID</th><th>Off-Cut Size (W × H)</th><th>Area (m²)</th></tr></thead>' +
+                '<tbody>' + (offcutRows.length > 0 ? offcutRows : '<tr><td colspan="3">No Offcut (Zero Remainder)</td></tr>') + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    pageCad.innerHTML = 
+      '<div class="rep-top-header"><span class="left-title">Optimization Printout</span><span>GLASS OPTIMIZER PRO</span><span>Date/Time: ' + dateStr + ' - Page ' + (pIdx + 2) + '</span></div>' +
+      '<div class="gray-title-bar"><span>WORKORDER</span><span>Material Code</span></div>' +
+      '<div class="info-grid" style="margin-bottom:6px;">' +
+        '<div><div class="info-row"><span class="info-lbl">Work Order</span><span class="info-val"><strong>' + data.woName + '</strong></span></div><div class="info-row"><span class="info-lbl">Date</span><span class="info-val">26-08-2026</span></div></div>' +
+        '<div><div class="info-row"><span class="info-lbl">Material Code</span><span class="info-val"><strong>' + data.matCode + '</strong></span></div><div class="info-row"><span class="info-lbl">Thickness</span><span class="info-val">' + data.thickness.toFixed(1) + ' mm</span></div></div>' +
+      '</div>' +
+      '<div>' + plansCadHTML + '</div>' +
+      '<div class="opty-foot-bar"><span>DEVELOPER: <strong>NABA JYOTI DUWARAH</strong> | PH: +91 9113891448</span><span>GLASS OPTIMIZER PRO</span></div>';
+
+    container.appendChild(pageCad);
+  });
+}
+
+function downloadDirectPDF() {
+  var element = document.getElementById('fullReportContainer');
+  var opt = {
+    margin:       [0, 0, 0, 0],
+    filename:     'Glass_Optimization_Printout.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+
+function ensureDefaultDataAndRun() {
+  var stockRows = document.querySelectorAll('#stockTable tbody tr');
+  if (stockRows.length === 0) {
+    addSheetRow(3660, 2440, 10);
+  }
+  var pieceRows = document.querySelectorAll('#pieceTable tbody tr');
+  if (pieceRows.length === 0) {
+    addPieceRow(1830, 2440, 2, 1, 0, true);
+  }
+  runOptimization();
+}
+
+function runStartupSplash() {
+  var splash = document.getElementById('launchSplash');
+  var progressBar = document.getElementById('launchProgressBar');
+  var launchMeta = document.getElementById('launchMeta');
+  if (!splash || !progressBar || !launchMeta) return;
+
+  splash.classList.add('visible');
+  let progress = 0;
+  const steps = [
+    'Initializing engine',
+    'Loading material database',
+    'Checking stock sheets',
+    'Preparing optimization planner',
+    'Launching workspace'
+  ];
+
+  const timer = setInterval(function() {
+    progress += 18;
+    progressBar.style.width = progress + '%';
+    if (progress <= 100) {
+      launchMeta.textContent = steps[Math.min(steps.length - 1, Math.floor(progress / 20))];
+    }
+
+    if (progress >= 100) {
+      clearInterval(timer);
+      setTimeout(function() {
+        splash.classList.remove('visible');
+        setTimeout(function() {
+          document.getElementById('welcomeModal').style.display = 'flex';
+        }, 180);
+      }, 400);
+    }
+  }, 200);
+}
+
+window.onload = function() {
+  ensureDefaultDataAndRun();
+  runStartupSplash();
+};
+</script>
+</body>
+</html>
