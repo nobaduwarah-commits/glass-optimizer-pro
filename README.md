@@ -216,6 +216,14 @@ The report can contain:
 
 ---
 
+# 🖼️ Sample Production Report
+
+The following screenshot shows an example of the generated Glass Optimizer Pro production report, including the optimization summary, used sheets, total area, waste, stock results and cutting information.
+
+![Glass Optimizer Pro Production Report](assets/Glass_Optimizer_Report_Page_1.png)
+
+---
+
 ## 8. 💰 Job Payment / Quotation
 
 The interface includes a job payment / quotation section for customer and job-related estimate information.
