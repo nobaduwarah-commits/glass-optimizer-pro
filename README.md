@@ -150,6 +150,8 @@ The application provides detailed optimization results including:
 
 ### Live Demo
 
+https://glass-optimizer-pro.netlify.app/
+
 Open the hosted live demo in a modern web browser.
 
 ### Run Locally
@@ -233,5 +235,3 @@ Future versions could include:
 - Centralized stock management
 - Order history
 - Production history
-
----
