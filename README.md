@@ -61,6 +61,8 @@ The application allows users to:
 
 Import existing stock or order information from Excel files.
 
+Supported formats:
+
 - `.XLSX`
 - `.XLS`
 
@@ -136,18 +138,6 @@ Generate a detailed production report containing:
 ### 💰 Job Payment / Quotation
 
 The interface includes a job payment / quotation section for customer and job-related estimate information.
-
----
-
-# 🖥️ Application Screenshots
-
-## Job / Optimization Screen
-
-![Glass Optimizer Pro Job Screen](assets/job-screen.png)
-
-## Sample Production Report
-
-![Glass Optimizer Pro Production Report](assets/Glass_Optimizer_Report_Page_1.png)
 
 ---
 
