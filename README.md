@@ -2,82 +2,68 @@
 
 > **Smart 2D Glass Cutting Optimization for Glass Shops & Fabrication Workshops**
 
-Glass Optimizer Pro is a practical web-based tool designed to help glass businesses plan customer cuts against available stock sheets, optimize sheet usage, identify waste and reusable off-cuts, and generate professional production reports.
+Glass Optimizer Pro is a web-based tool designed to help glass shops and fabrication workshops plan customer glass cuts using available stock sheets.
 
-The project is designed around real-world glass fabrication workflows where accurate cutting plans, stock visibility, waste control, and clear workshop instructions are important for daily production.
+It helps organize cutting requirements, optimize sheet usage, calculate waste, identify reusable off-cuts, and generate clear production reports.
 
 ---
 
 ## 🎥 Demo Video
 
-▶️ **Watch Glass Optimizer Pro in action:**
+▶️ **Watch the complete working demo:**
 
 https://youtu.be/HBgjYVS5C-8
 
 ---
 
-## 🎯 Real-World Problem
+## 🎯 Problem
 
-Glass shops and fabrication workshops regularly work with:
+Glass shops often need to cut many different customer sizes from large master glass sheets.
 
-- Multiple stock sheet sizes
-- Different customer cut requirements
-- Large quantities of repeated sizes
-- Manual cutting calculations
-- Leftover off-cuts
-- Material wastage
-- Workshop cutting instructions
+Manual planning can make it difficult to:
 
-Manual planning can make it difficult to select suitable stock, organize cutting patterns, track remaining pieces, and understand material waste.
+- Select the right stock sheet
+- Arrange multiple customer pieces
+- Reduce unused material
+- Track leftover glass pieces
+- Give clear cutting instructions to workshop workers
+- Prepare production reports
 
-**Glass Optimizer Pro brings these tasks into one structured digital workflow.**
-
----
-
-## 💡 What Is Glass Optimizer Pro?
-
-Glass Optimizer Pro is a web-based glass cutting optimization tool designed for practical glass shop and fabrication workflows.
-
-The application allows users to:
-
-- Import or enter stock sheet information
-- Add customer cutting requirements
-- Calculate optimized cutting plans
-- Review stock sheet usage
-- Generate visual cutting patterns
-- Identify waste and reusable off-cuts
-- Generate production reports
-- Prepare job/payment estimation information
-
-### Core Workflow
-
-**Stock → Customer Demand → Optimization → Cutting Patterns → Waste / Off-Cuts → Production Report**
+Glass Optimizer Pro provides a structured digital workflow for these tasks.
 
 ---
 
-# 🚀 Key Features
+## 💡 Solution
 
-### 📊 Excel File Import
+The application combines stock information and customer cutting requirements to create an organized cutting plan.
 
-Import existing stock or order information from Excel files.
+### Workflow
 
-Supported formats:
+**Stock → Customer Requirements → Optimization → Cutting Pattern → Waste & Off-Cuts → Production Report**
+
+---
+
+## 🚀 Key Features
+
+### 📊 Excel Import
+
+Import existing stock or order information from:
 
 - `.XLSX`
 - `.XLS`
 
-### 📦 Stock Sheet Management
+### 📦 Stock Management
 
 Manage available master glass sheets using:
 
-- X Dimension
-- Y Dimension
+- Sheet width
+- Sheet height
 - Quantity
 - Multiple stock sheet sizes
 
 ### ✂️ Customer Cut Requirements
 
-Enter customer requirements including:
+Enter required glass pieces with:
 
 - Width
 - Height
@@ -87,40 +73,34 @@ Enter customer requirements including:
 
 ### 🧠 2D Cutting Optimization
 
-Calculate cutting plans based on available stock sheets and required customer pieces.
+The application calculates cutting plans using available stock sheets and required customer pieces.
 
-The optimization output includes:
+The optimization provides information such as:
 
-- Number of pieces
-- Number of positions
+- Required pieces
 - Used sheets
-- Used sheet area
-- Required piece area
-- Real waste
-- Total waste
+- Sheet area
+- Cut area
+- Waste
 - Reusable waste
 - Final waste
 
 ### 📐 Visual Cutting Patterns
 
-Generate cutting patterns showing:
+The system generates cutting patterns showing:
 
 - Master sheet dimensions
-- Customer cut pieces
-- Piece quantities
-- Finished sizes
+- Customer pieces
+- Piece sizes
+- Quantities
 - Orientation
-- Waste areas
-- Remaining off-cut sizes
+- Remaining areas
+
+These patterns can be used as practical cutting instructions in the workshop.
 
 ### ♻️ Off-Cut Tracking
 
-Identify remaining pieces after cutting and record their:
-
-- Width
-- Height
-- Area
-- Quantity / block information
+The system identifies leftover glass areas and provides their dimensions and area so they can be tracked for possible reuse.
 
 ### 📄 Production / PDF Report
 
@@ -137,28 +117,42 @@ Generate a detailed production report containing:
 
 ### 💰 Job Payment / Quotation
 
-The interface includes a job payment / quotation section for customer and job-related estimate information.
+The application also includes a job/payment quotation section for customer and job-related estimation.
 
 ---
 
+## 📈 Optimization Output
 
-# 🛠️ Technology Stack
+The application provides detailed optimization results including:
 
-- **HTML**
-- **JavaScript**
-- **Web-based User Interface**
-- **Excel Input**
-- **PDF / Print Reporting**
+- Required piece quantities
+- Used stock sheets
+- Cut area
+- Waste calculation
+- Stock-wise sheet usage
+- Cutting patterns
+- Customer cut sizes
+- Reusable off-cut information
 
 ---
 
-# ▶️ How to Run
+## 🛠️ Technology Stack
 
-## Live Demo
+- HTML
+- JavaScript
+- Web-based User Interface
+- Excel Input
+- PDF / Print Reporting
+
+---
+
+## ▶️ How to Use
+
+### Live Demo
 
 Open the hosted live demo in a modern web browser.
 
-## Run Locally
+### Run Locally
 
 1. Clone or download this repository.
 2. Open the project folder.
@@ -172,21 +166,72 @@ Open the hosted live demo in a modern web browser.
 
 ---
 
-# 📋 Workflow
+## 🏭 Target Users
 
-```text
-Import / Enter Stock
-        ↓
-Customer Cut Requirements
-        ↓
-Run Optimization
-        ↓
-Review Stock Usage
-        ↓
-Review Cutting Patterns
-        ↓
-Check Waste & Off-Cuts
-        ↓
-Generate Production Report
-        ↓
-Workshop Cutting
+Designed for:
+
+- Small and medium glass shops
+- Glass fabricators
+- Architectural glass workshops
+- Glass processing businesses
+- Production supervisors
+- Workshop operators
+- Glass cutting teams
+
+---
+
+## 🌍 Business Value
+
+Glass Optimizer Pro helps organize the glass cutting process by providing:
+
+- Better stock visibility
+- Organized cutting plans
+- Less manual calculation
+- Clear workshop instructions
+- Off-cut tracking
+- Waste visibility
+- Faster production reporting
+
+---
+
+## 💼 Business Potential
+
+The project can be developed into a specialized software solution for glass businesses.
+
+Possible future models include:
+
+- Monthly subscription
+- Annual business license
+- Desktop application license
+- Workshop/company plans
+- Premium optimization features
+- CNC integration services
+
+---
+
+## 🔮 Future Roadmap
+
+### CNC Integration
+
+Connect optimization results with CNC glass cutting equipment and generate machine-ready cutting data where supported.
+
+### Desktop Application
+
+Package the application as a standalone Windows application for offline workshop use.
+
+### Advanced Stock Intelligence
+
+Use previously saved reusable off-cuts in future optimization jobs.
+
+### Cloud / Multi-User Version
+
+Future versions could include:
+
+- Cloud storage
+- Multiple users
+- Workshop accounts
+- Centralized stock management
+- Order history
+- Production history
+
+---
